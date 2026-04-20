@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>AIR COOLAX </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with Navigation -->
+        <div class="app-header">
+            <div class="header-title">
+                <i class="fas fa-snowflake"></i> AIR COOLAX
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="toggleHistory()" title="Bill History">
+                    <i class="fas fa-history"></i>
+                </button>
+                <button class="icon-btn" onclick="saveBillToServer()" title="Save Bill">
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Bill Card -->
+        <div class="bill-card" id="billCard">
+            <div class="shop-header">
+                <div class="shop-name">AIR COOLAX</div>
+                <div class="badge-tag"><i class="fas fa-bolt"></i> INVOICE</div>
+            </div>
+
+            <div class="address-block">
+    <div class="office-details">
+        <div class="line1 editable-field" id="officeLine1">
+            Office No.01/26, Tilak Nagar, 90ft Road Near Gulshan Hotel, Sakinaka Andheri (E), Mumbai – 400072
+        </div>
+        <div id="officeLine2">
+           
+        </div>
+    </div>
+
+    <div class="contact-row">
+        <div class="contact-item" id="contactMobile">
+            <i class="fas fa-mobile-alt"></i> +919557422118
+        </div>
+        <div class="contact-item" id="contactEmail">
+            <i class="fas fa-envelope"></i> msalik269@gmail.com
+        </div>
+    </div>
+</div>
+
+            <div class="info-grid" id="infoGrid">
+                <div class="field"><span class="label">Name</span><span class="value" contenteditable="true" id="clientName">Customer Name/Company  </span></div>
+                <div class="field"><span class="label">Bill No</span><span class="value" contenteditable="true" id="billNo">A001</span></div>
+                <div class="field" style="grid-column: span 2;"><span class="label">Address</span><span class="value" contenteditable="true" id="clientAddress">Flat 901 yoccka building nahar amrit Chandevali Mumbai</span></div>
+                <div class="field"><span class="label">Date</span><span class="value" contenteditable="true" id="billDate">03/08/2026</span></div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="invoice-table" id="invoiceTable">
+                    <thead>
+                        <tr><th>SR NO</th><th>PARTICULAR</th><th>RATE (₹)</th><th>QTY</th><th>AMOUNT (₹)</th><th></th></tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td contenteditable="true">1</td>
+                            <td contenteditable="true">AC 1.5 ton Split Inverter With Pcb Repair</td>
+                            <td contenteditable="true" class="rate">400</td>
+                            <td contenteditable="true" class="qty">1</td>
+                            <td class="amount">4000</td>
+                            <td class="remove-row" onclick="removeRow(this)"><i class="fas fa-trash-alt"></i></td>
+                        </tr>
+                        <!-- 6 empty rows -->
+                        
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" style="text-align:right; font-weight:700;">TOTAL AMOUNT</td>
+                            <td id="totalAmountDisplay" style="font-weight:800; background:#e2efff;">4,000</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="add-row-btn" onclick="addNewRow()"><i class="fas fa-plus-circle"></i> Add new line item</div>
+            <div class="payment-buttons">
+  <button class="pay-btn cash" onclick="selectPayment('cash')">
+    <i class="fas fa-money-bill-wave"></i> Cash Payment
+  </button>
+
+  <button class="pay-btn online" onclick="selectPayment('online')">
+    <i class="fas fa-credit-card"></i> Online Payment
+  </button>
+</div>
+<p id="paymentStatus"></p>
+
+<!-- QR Payment Section -->
+<div class="qr-payment-section" id="onlineSection">
+    <div class="qr-info">
+        <h3><i class="fas fa-qrcode"></i> Scan to Pay (UPI)</h3>
+        <p>Pay via Google Pay, PhonePe, Paytm, BHIM</p>
+        <div class="qr-payment-details">
+            <div><i class="fas fa-building"></i> <strong>AIR COOLAX SERVICES</strong></div>
+            <div><i class="fas fa-user"></i> Mohd Shalik </div>
+            <div><i class="fas fa-mobile-alt"></i> UPI ID: 
+                <span contenteditable="true" class="upi-field" id="upiId">msalik269@okicici</span>
+            </div>
+            <div><i class="fas fa-rupee-sign"></i> Amount: ₹<span id="qrDynamicAmount">4,000</span></div>
+        </div>
+    </div>
+
+    <div class="qr-code-container">
+        <div id="qrcode"></div>
+        <div class="qr-amount" id="qrAmountBadge">₹4,000</div>
+        <button class="refresh-qr" onclick="generateQRCode()">
+            <i class="fas fa-sync-alt"></i> Refresh QR
+        </button>
+    </div>
+</div>
+            <div class="footer-note">
+                <div contenteditable="true" id="footerMessage">Thank you for your time and consideration. I hope to see you again soon.</div>
+                <div class="signature-line" contenteditable="true" id="signature">✧ AIR COOLAX ✧</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-bar">
+         
+            <button class="action-btn primary" id="downloadPDF">
+                <i class="fas fa-file-pdf"></i> PDF
+            </button>
+        
+            <button class="action-btn success" onclick="exportBillJSON()">
+    <i class="fas fa-download"></i> Export
+</button>
+<button class="action-btn success" onclick="sharePDFonWhatsApp()">
+    <i class="fas fa-whatsapp"></i> WhatsApp Share
+</button>
+
+ 
+
+
+        </div>
+
+
+        
+
+        <!-- History Panel (Hidden by default) -->
+        <div class="history-panel" id="historyPanel">
+            <div class="history-header">
+                <h3><i class="fas fa-history"></i> Recent Bills</h3>
+                <button class="close-btn" onclick="toggleHistory()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="loading">Loading...</div>
+            </div>
+            <button class="clear-history" onclick="clearHistory()">Clear History</button>
+        </div>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
